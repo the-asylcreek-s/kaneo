@@ -3917,20 +3917,18 @@
 		},
 		"myTasks": {
 			"emptyDescription": "指派给你的任务都会汇总在这里。",
-			"groupBy": {
-				"dueDate": "截止日期",
-				"label": "分组方式",
-				"project": "项目"
-			},
 			"pageTitle": "我的任务",
-			"truncated": "共 {{total}} 个任务，只显示前 {{shown}} 个。"
+			"truncated": "共 {{total}} 个任务，只显示前 {{shown}} 个。",
+			"statusFilter": {
+				"clear": "Clear filter",
+				"label": "Status",
+				"noMatches": "No tasks match this filter"
+			},
+			"createTaskIn": "Create task in {{project}}"
 		},
 		"myWork": {
 			"due": {
-				"later": "以后",
-				"noDueDate": "无截止日期",
 				"overdue": "已逾期",
-				"thisWeek": "本周",
 				"today": "今天",
 				"tomorrow": "明天"
 			},

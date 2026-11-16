@@ -3921,21 +3921,19 @@
 			"due": {
 				"overdue": "已逾期",
 				"today": "今天",
-				"tomorrow": "明天",
-				"thisWeek": "本週",
-				"later": "之後",
-				"noDueDate": "無截止日"
+				"tomorrow": "明天"
 			}
 		},
 		"myTasks": {
 			"pageTitle": "我的任務",
 			"emptyDescription": "此工作區中指派給你的任務會顯示在這裡。",
-			"groupBy": {
-				"label": "分組依據",
-				"dueDate": "截止日",
-				"project": "專案"
+			"truncated": "顯示 {{total}} 個任務中的前 {{shown}} 個。",
+			"statusFilter": {
+				"clear": "Clear filter",
+				"label": "Status",
+				"noMatches": "No tasks match this filter"
 			},
-			"truncated": "顯示 {{total}} 個任務中的前 {{shown}} 個。"
+			"createTaskIn": "Create task in {{project}}"
 		},
 		"archived": {
 			"description": "Contact an administrator to restore access.",

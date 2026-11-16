@@ -1,14 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CircleCheck } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import WorkspaceLayout from "@/components/common/workspace-layout";
-import {
-  type MyTasksGroupBy,
-  MyTasksGroupByToggle,
-} from "@/components/my-tasks/my-tasks-group-by";
 import { MyTasksList } from "@/components/my-tasks/my-tasks-list";
+import { MyTasksStatusFilter } from "@/components/my-tasks/my-tasks-status-filter";
+import {
+  filterTasksByStatus,
+  getStatusOptions,
+} from "@/components/my-tasks/status-options";
 import PageTitle from "@/components/page-title";
+import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyDescription,
@@ -33,16 +35,27 @@ function RouteComponent() {
     isLoading,
     isError,
   } = useGetAssignedTasks(workspaceId);
-  const [groupBy, setGroupBy] = useState<MyTasksGroupBy>("dueDate");
+  const [statuses, setStatuses] = useState<Set<string>>(() => new Set());
+  const tasks = assigned?.tasks;
+  const statusOptions = useMemo(() => getStatusOptions(tasks ?? []), [tasks]);
+  const visibleTasks = useMemo(
+    () => filterTasksByStatus(tasks ?? [], statuses),
+    [tasks, statuses],
+  );
 
   return (
     <>
       <PageTitle title={t("workspace:myTasks.pageTitle")} />
       <WorkspaceLayout
         title={t("workspace:myTasks.pageTitle")}
+        className="min-w-0 shrink"
         headerActions={
-          assigned?.tasks.length ? (
-            <MyTasksGroupByToggle value={groupBy} onChange={setGroupBy} />
+          tasks?.length ? (
+            <MyTasksStatusFilter
+              options={statusOptions}
+              value={statuses}
+              onChange={setStatuses}
+            />
           ) : null
         }
       >
@@ -77,13 +90,33 @@ function RouteComponent() {
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>
+          ) : visibleTasks.length === 0 ? (
+            <Empty className="min-h-[60vh]">
+              <EmptyHeader>
+                <EmptyTitle>
+                  {t("workspace:myTasks.statusFilter.noMatches")}
+                </EmptyTitle>
+              </EmptyHeader>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setStatuses(new Set())}
+              >
+                {t("workspace:myTasks.statusFilter.clear")}
+              </Button>
+            </Empty>
           ) : (
-            <MyTasksList
-              tasks={assigned.tasks}
-              total={assigned.total}
-              groupBy={groupBy}
-              workspaceId={workspaceId}
-            />
+            <>
+              <MyTasksList tasks={visibleTasks} workspaceId={workspaceId} />
+              {assigned.total > assigned.tasks.length && (
+                <p className="px-5 py-3 text-muted-foreground text-xs">
+                  {t("workspace:myTasks.truncated", {
+                    shown: assigned.tasks.length,
+                    total: assigned.total,
+                  })}
+                </p>
+              )}
+            </>
           )}
         </div>
       </WorkspaceLayout>

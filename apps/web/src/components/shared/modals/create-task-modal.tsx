@@ -87,6 +87,7 @@ type CreateTaskModalProps = {
   onClose: () => void;
   status?: string;
   projectId?: string;
+  defaultAssigneeId?: string;
   instant?: boolean;
 };
 
@@ -144,6 +145,7 @@ function CreateTaskModalContent({
   onClose,
   status,
   projectId,
+  defaultAssigneeId = "",
   instant = false,
 }: CreateTaskModalProps) {
   const { t } = useTranslation();
@@ -240,7 +242,7 @@ function CreateTaskModalContent({
   const titleRef = useAutoGrowTextarea(title);
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<Priority>("no-priority");
-  const [assigneeId, setAssigneeId] = useState("");
+  const [assigneeId, setAssigneeId] = useState(defaultAssigneeId);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [recurrence, setRecurrence] = useState<TaskRecurrence | null>(null);
@@ -408,7 +410,7 @@ function CreateTaskModalContent({
     title.trim() ||
     description.trim() ||
     priority !== "no-priority" ||
-    assigneeId ||
+    assigneeId !== defaultAssigneeId ||
     startDate ||
     dueDate ||
     recurrence ||
@@ -614,7 +616,7 @@ function CreateTaskModalContent({
         setTitle("");
         setDescription("");
         setPriority("no-priority");
-        setAssigneeId("");
+        setAssigneeId(defaultAssigneeId);
         setStartDate(undefined);
         setDueDate(undefined);
         setRecurrence(null);
