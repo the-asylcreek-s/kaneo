@@ -1,66 +1,38 @@
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { useMemo, useState } from "react";
 import { AssignedTaskRow } from "@/components/my-work/assigned-task-row";
-import type { DueBucket } from "@/components/my-work/due-bucket";
-import {
-  groupAssignedTasksByDueDate,
-  groupAssignedTasksByProject,
-} from "@/components/my-work/group-assigned-tasks";
+import { groupAssignedTasksByProject } from "@/components/my-work/group-assigned-tasks";
+import CreateTaskModal from "@/components/shared/modals/create-task-modal";
 import type { AssignedTask } from "@/fetchers/task/get-assigned-tasks";
-import { useLocalDay } from "@/hooks/use-local-day";
-import { cn } from "@/lib/cn";
-import type { MyTasksGroupBy } from "./my-tasks-group-by";
+import { useWorkspacePermission } from "@/hooks/use-workspace-permission";
+import { authClient } from "@/lib/auth-client";
+import { MyTasksGroupHeader } from "./my-tasks-group-header";
 
 type MyTasksListProps = {
   tasks: AssignedTask[];
-  total: number;
-  groupBy: MyTasksGroupBy;
   workspaceId: string;
 };
 
-export function MyTasksList({
-  tasks,
-  total,
-  groupBy,
-  workspaceId,
-}: MyTasksListProps) {
-  const { t } = useTranslation();
-  const day = useLocalDay();
-  const groups = useMemo(
-    () =>
-      groupBy === "project"
-        ? groupAssignedTasksByProject(tasks)
-        : groupAssignedTasksByDueDate(tasks, new Date(day)),
-    [tasks, groupBy, day],
-  );
-
-  const bucketTitles: Record<DueBucket, string> = {
-    overdue: t("workspace:myWork.due.overdue"),
-    today: t("workspace:myWork.due.today"),
-    thisWeek: t("workspace:myWork.due.thisWeek"),
-    later: t("workspace:myWork.due.later"),
-    noDueDate: t("workspace:myWork.due.noDueDate"),
-  };
+export function MyTasksList({ tasks, workspaceId }: MyTasksListProps) {
+  const groups = useMemo(() => groupAssignedTasksByProject(tasks), [tasks]);
+  const { canCreateTasks } = useWorkspacePermission();
+  const { data: session } = authClient.useSession();
+  const [createInProjectId, setCreateInProjectId] = useState<string>();
 
   return (
     <div className="flex flex-col">
       {groups.map((group) => (
         <section key={group.id}>
-          <h2 className="flex h-9 items-center gap-2 border-border/50 border-b bg-muted/40 px-5 text-[13px]">
-            <span
-              className={cn(
-                "font-semibold",
-                group.bucket === "overdue"
-                  ? "text-destructive-foreground"
-                  : "text-foreground",
-              )}
-            >
-              {group.bucket ? bucketTitles[group.bucket] : group.title}
-            </span>
-            <span className="font-normal text-muted-foreground text-xs tabular-nums">
-              {group.tasks.length}
-            </span>
-          </h2>
+          <MyTasksGroupHeader
+            workspaceId={workspaceId}
+            projectId={group.id}
+            title={group.title}
+            count={group.tasks.length}
+            onCreateTask={
+              canCreateTasks()
+                ? () => setCreateInProjectId(group.id)
+                : undefined
+            }
+          />
           <div className="flex flex-col px-4">
             {group.tasks.map((task) => (
               <AssignedTaskRow
@@ -68,19 +40,20 @@ export function MyTasksList({
                 task={task}
                 workspaceId={workspaceId}
                 showLabels
+                showStatus
+                showProject={false}
               />
             ))}
           </div>
         </section>
       ))}
-      {total > tasks.length && (
-        <p className="px-5 py-3 text-muted-foreground text-xs">
-          {t("workspace:myTasks.truncated", {
-            shown: tasks.length,
-            total,
-          })}
-        </p>
-      )}
+      {/* Prefill the assignee so the new task shows up on this page. */}
+      <CreateTaskModal
+        open={Boolean(createInProjectId)}
+        projectId={createInProjectId}
+        defaultAssigneeId={session?.user.id}
+        onClose={() => setCreateInProjectId(undefined)}
+      />
     </div>
   );
 }

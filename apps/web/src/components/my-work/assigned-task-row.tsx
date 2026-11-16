@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { AssignedTask } from "@/fetchers/task/get-assigned-tasks";
+import { cn } from "@/lib/cn";
 import { getColumnIcon } from "@/lib/column";
 import { getStatusDisplayLabel } from "@/lib/i18n/domain";
 import { resolveLabelColor } from "@/lib/label-color";
@@ -10,13 +11,23 @@ type AssignedTaskRowProps = {
   task: AssignedTask;
   workspaceId: string;
   showLabels?: boolean;
+  showProject?: boolean;
+  showStatus?: boolean;
 };
 
 export function AssignedTaskRow({
   task,
   workspaceId,
   showLabels = false,
+  showProject = true,
+  showStatus = false,
 }: AssignedTaskRowProps) {
+  const statusLabel = getStatusDisplayLabel(
+    task.status,
+    task.statusName ?? undefined,
+  );
+  const statusIcon = getColumnIcon(task.status, false, task.statusIcon);
+
   return (
     <Link
       to="/dashboard/workspace/$workspaceId/project/$projectId/task/$taskId"
@@ -26,11 +37,12 @@ export function AssignedTaskRow({
       <span className="flex w-4 shrink-0 justify-center [&_svg]:size-3.5">
         {getPriorityIcon(task.priority)}
       </span>
+      {/* With a status column, the leading icon only covers narrow screens. */}
       <span
-        className="shrink-0"
-        title={getStatusDisplayLabel(task.status, task.statusName ?? undefined)}
+        className={cn("shrink-0", showStatus && "sm:hidden")}
+        title={statusLabel}
       >
-        {getColumnIcon(task.status, false, task.statusIcon)}
+        {statusIcon}
       </span>
       <span className="hidden w-16 shrink-0 truncate font-medium text-muted-foreground text-xs sm:block">
         {task.number == null
@@ -40,7 +52,13 @@ export function AssignedTaskRow({
       <span className="min-w-0 flex-1 truncate text-foreground text-sm">
         {task.title}
       </span>
-      {showLabels && task.labels.length > 0 && (
+      {showStatus && (
+        <span className="hidden w-32 shrink-0 items-center gap-1.5 text-muted-foreground text-xs sm:flex">
+          <span className="shrink-0">{statusIcon}</span>
+          <span className="truncate">{statusLabel}</span>
+        </span>
+      )}
+      {showLabels && (
         <span className="hidden w-44 shrink-0 items-center gap-2.5 overflow-hidden lg:flex">
           {task.labels.slice(0, 2).map((label) => (
             <span
@@ -57,13 +75,14 @@ export function AssignedTaskRow({
           ))}
         </span>
       )}
-      <span className="hidden w-28 shrink-0 truncate text-muted-foreground text-xs sm:block">
-        {task.projectName}
+      {showProject && (
+        <span className="hidden w-28 shrink-0 truncate text-muted-foreground text-xs sm:block">
+          {task.projectName}
+        </span>
+      )}
+      <span className="shrink-0 text-right sm:w-20">
+        <DueDateText dueDate={task.dueDate} />
       </span>
-      <DueDateText
-        dueDate={task.dueDate}
-        className="shrink-0 text-right sm:w-20"
-      />
     </Link>
   );
 }

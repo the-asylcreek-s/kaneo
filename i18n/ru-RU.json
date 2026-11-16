@@ -4197,20 +4197,18 @@
 		},
 		"myTasks": {
 			"emptyDescription": "Tasks assigned to you across this workspace show up here.",
-			"groupBy": {
-				"dueDate": "Due date",
-				"label": "Group by",
-				"project": "Project"
-			},
 			"pageTitle": "My tasks",
-			"truncated": "Showing the first {{shown}} of {{total}} tasks."
+			"truncated": "Showing the first {{shown}} of {{total}} tasks.",
+			"statusFilter": {
+				"clear": "Clear filter",
+				"label": "Status",
+				"noMatches": "No tasks match this filter"
+			},
+			"createTaskIn": "Create task in {{project}}"
 		},
 		"myWork": {
 			"due": {
-				"later": "Later",
-				"noDueDate": "No due date",
 				"overdue": "Overdue",
-				"thisWeek": "This week",
 				"today": "Today",
 				"tomorrow": "Tomorrow"
 			},

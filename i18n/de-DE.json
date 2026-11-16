@@ -3993,20 +3993,18 @@
 		},
 		"myTasks": {
 			"emptyDescription": "Hier erscheinen die Aufgaben, die dir in diesem Workspace zugewiesen sind.",
-			"groupBy": {
-				"dueDate": "Fälligkeitsdatum",
-				"label": "Gruppieren nach",
-				"project": "Projekt"
-			},
 			"pageTitle": "Meine Aufgaben",
-			"truncated": "Die ersten {{shown}} von {{total}} Aufgaben werden angezeigt."
+			"truncated": "Die ersten {{shown}} von {{total}} Aufgaben werden angezeigt.",
+			"statusFilter": {
+				"clear": "Clear filter",
+				"label": "Status",
+				"noMatches": "No tasks match this filter"
+			},
+			"createTaskIn": "Create task in {{project}}"
 		},
 		"myWork": {
 			"due": {
-				"later": "Später",
-				"noDueDate": "Kein Fälligkeitsdatum",
 				"overdue": "Überfällig",
-				"thisWeek": "Diese Woche",
 				"today": "Heute",
 				"tomorrow": "Morgen"
 			},

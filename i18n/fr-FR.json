@@ -4069,20 +4069,18 @@
 		},
 		"myTasks": {
 			"emptyDescription": "Les tâches qui vous sont assignées dans cet espace de travail s'affichent ici.",
-			"groupBy": {
-				"dueDate": "Date d'échéance",
-				"label": "Grouper par",
-				"project": "Projet"
-			},
 			"pageTitle": "Mes tâches",
-			"truncated": "Affichage des {{shown}} premières tâches sur {{total}}."
+			"truncated": "Affichage des {{shown}} premières tâches sur {{total}}.",
+			"statusFilter": {
+				"clear": "Clear filter",
+				"label": "Status",
+				"noMatches": "No tasks match this filter"
+			},
+			"createTaskIn": "Create task in {{project}}"
 		},
 		"myWork": {
 			"due": {
-				"later": "Plus tard",
-				"noDueDate": "Aucune date d'échéance",
 				"overdue": "En retard",
-				"thisWeek": "Cette semaine",
 				"today": "Aujourd'hui",
 				"tomorrow": "Demain"
 			},
