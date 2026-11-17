@@ -1188,6 +1188,25 @@
           "labels"
         ]
       },
+      "CompletedTasks": {
+        "type": "object",
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssignedTask"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "All matching completed tasks, including any beyond the first 100 returned."
+          }
+        },
+        "required": [
+          "tasks",
+          "total"
+        ]
+      },
       "BoardResponse": {
         "type": "object",
         "properties": {
@@ -12040,6 +12059,104 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AssignedTasks"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid workspace ID or query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing project:read or task:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/task/completed": {
+      "get": {
+        "operationId": "listCompletedTasks",
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "List my completed tasks",
+        "description": "Get the tasks assigned to the caller that sit in a final column across a workspace's active projects and were completed within [from, to). Completion time is the task's latest status change, or its creation time if it never changed status. Newest first. At most 100 tasks are returned; total counts all of them.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Start of the completion window, inclusive."
+            },
+            "required": true,
+            "description": "Start of the completion window, inclusive.",
+            "name": "from",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "description": "End of the completion window, exclusive."
+            },
+            "required": true,
+            "description": "End of the completion window, exclusive.",
+            "name": "to",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Completed tasks assigned to the caller",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompletedTasks"
                 }
               }
             }

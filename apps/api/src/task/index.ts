@@ -41,6 +41,7 @@ import deleteTask from "./controllers/delete-task";
 import duplicateTask from "./controllers/duplicate-task";
 import exportTasks from "./controllers/export-tasks";
 import getAssignedTasks from "./controllers/get-assigned-tasks";
+import getCompletedTasks from "./controllers/get-completed-tasks";
 import getTaskByTicketId from "./controllers/get-task-by-ticket-id";
 import getTask from "./controllers/get-task";
 import getTasks from "./controllers/get-tasks";
@@ -73,6 +74,7 @@ import "./recurrence/subscribe";
 import {
   assignedTasksSchema,
   boardSchema,
+  completedTasksSchema,
   bulkResultSchema,
   descriptionMatchesSchema,
   descriptionPageSchema,
@@ -88,6 +90,7 @@ import {
 import {
   assignedTasksQuery,
   bulkUpdateBody,
+  completedTasksQuery,
   createTaskBody,
   descriptionMatchesQuery,
   descriptionPageQuery,
@@ -129,6 +132,30 @@ const listAssignedTasksRoute = createRoute({
   request: { query: assignedTasksQuery },
   responses: {
     200: jsonResponse("Open tasks assigned to the caller", assignedTasksSchema),
+    400: errorResponse("Invalid workspace ID or query parameters"),
+    403: errorResponse("Missing project:read or task:read permission"),
+    404: errorResponse("Workspace not found"),
+  },
+});
+
+const listCompletedTasksRoute = createRoute({
+  method: "get",
+  operationId: "listCompletedTasks",
+  path: "/completed",
+  tags: ["Tasks"],
+  summary: "List my completed tasks",
+  description:
+    "Get the tasks assigned to the caller that sit in a final column across a workspace's active projects and were completed within [from, to). Completion time is the task's latest status change, or its creation time if it never changed status. Newest first. At most 100 tasks are returned; total counts all of them.",
+  middleware: [
+    workspaceAccess.fromQuery(),
+    requireWorkspacePermission({ project: ["read"], task: ["read"] }),
+  ] as const,
+  request: { query: completedTasksQuery },
+  responses: {
+    200: jsonResponse(
+      "Completed tasks assigned to the caller",
+      completedTasksSchema,
+    ),
     400: errorResponse("Invalid workspace ID or query parameters"),
     403: errorResponse("Missing project:read or task:read permission"),
     404: errorResponse("Workspace not found"),
@@ -862,6 +889,18 @@ const task = apiRouter<BaseVariables & { workspaceId: string }>()
         workspaceId,
         c.get("userId"),
         countOnly === "true",
+      ),
+      200,
+    );
+  })
+  .openapi(listCompletedTasksRoute, async (c) => {
+    const { workspaceId, from, to } = c.req.valid("query");
+    return c.json(
+      await getCompletedTasks(
+        workspaceId,
+        c.get("userId"),
+        new Date(from),
+        new Date(to),
       ),
       200,
     );

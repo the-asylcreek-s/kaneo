@@ -321,3 +321,13 @@ export const assignedTasksSchema = z
     }),
   })
   .openapi("AssignedTasks");
+
+export const completedTasksSchema = z
+  .object({
+    tasks: assignedTasksSchema.shape.tasks,
+    total: z.number().openapi({
+      description:
+        "All matching completed tasks, including any beyond the first 100 returned.",
+    }),
+  })
+  .openapi("CompletedTasks");

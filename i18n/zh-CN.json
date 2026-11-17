@@ -2821,7 +2821,8 @@
 			"home": "首页",
 			"inbox": "收件箱",
 			"invitePeople": "邀请成员",
-			"myTasks": "我的任务"
+			"myTasks": "我的任务",
+			"completedTasks": "Completed"
 		},
 		"projectList": {
 			"viewProject": "查看项目",
@@ -3940,6 +3941,15 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
+		},
+		"completedTasks": {
+			"empty": "Nothing completed this day",
+			"emptyDescription": "Tasks assigned to you that were completed on this day show up here.",
+			"nextDay": "Next day",
+			"pageTitle": "Completed",
+			"previousDay": "Previous day",
+			"today": "Today",
+			"yesterday": "Yesterday"
 		}
 	},
 	"team": {

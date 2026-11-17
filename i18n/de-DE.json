@@ -2870,7 +2870,8 @@
 			"home": "Startseite",
 			"inbox": "Posteingang",
 			"invitePeople": "Personen einladen",
-			"myTasks": "Meine Aufgaben"
+			"myTasks": "Meine Aufgaben",
+			"completedTasks": "Completed"
 		},
 		"projectList": {
 			"viewProject": "Projekt ansehen",
@@ -4016,6 +4017,15 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
+		},
+		"completedTasks": {
+			"empty": "Nothing completed this day",
+			"emptyDescription": "Tasks assigned to you that were completed on this day show up here.",
+			"nextDay": "Next day",
+			"pageTitle": "Completed",
+			"previousDay": "Previous day",
+			"today": "Today",
+			"yesterday": "Yesterday"
 		}
 	},
 	"team": {
