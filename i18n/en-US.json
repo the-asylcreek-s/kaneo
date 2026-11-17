@@ -2870,6 +2870,7 @@
 			"home": "Home",
 			"inbox": "Inbox",
 			"myTasks": "My tasks",
+			"completedTasks": "Completed",
 			"invitePeople": "Invite people"
 		},
 		"projectList": {
@@ -3824,7 +3825,6 @@
 			"datePlaceholder": "Set date…",
 			"thisWeekend": "This weekend",
 			"nextWeek": "Next week",
-			"pickDate": "Pick a date",
 			"startsOn": "Starts {{date}}",
 			"beforeStart": "{{date}} is before the start date",
 			"afterDue": "{{date}} is after the due date"
@@ -4010,6 +4010,15 @@
 			},
 			"createTaskIn": "Create task in {{project}}",
 			"truncated": "Showing the first {{shown}} of {{total}} tasks."
+		},
+		"completedTasks": {
+			"pageTitle": "Completed",
+			"empty": "Nothing completed this day",
+			"emptyDescription": "Tasks assigned to you that were completed on this day show up here.",
+			"today": "Today",
+			"yesterday": "Yesterday",
+			"previousDay": "Previous day",
+			"nextDay": "Next day"
 		},
 		"archived": {
 			"title": "Workspace archived",

@@ -38,6 +38,16 @@ export const assignedTasksQuery = z.object({
   }),
 });
 
+export const completedTasksQuery = z.object({
+  workspaceId: z.string().min(1),
+  from: z.iso.datetime({ offset: true }).openapi({
+    description: "Start of the completion window, inclusive.",
+  }),
+  to: z.iso.datetime({ offset: true }).openapi({
+    description: "End of the completion window, exclusive.",
+  }),
+});
+
 const priority = z.enum(VALID_PRIORITIES);
 
 // Required object of optional filters: a RouteParameter cannot itself be optional.

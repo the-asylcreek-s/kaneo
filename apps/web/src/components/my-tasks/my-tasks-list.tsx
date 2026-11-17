@@ -10,9 +10,14 @@ import { MyTasksGroupHeader } from "./my-tasks-group-header";
 type MyTasksListProps = {
   tasks: AssignedTask[];
   workspaceId: string;
+  allowCreate?: boolean;
 };
 
-export function MyTasksList({ tasks, workspaceId }: MyTasksListProps) {
+export function MyTasksList({
+  tasks,
+  workspaceId,
+  allowCreate = true,
+}: MyTasksListProps) {
   const groups = useMemo(() => groupAssignedTasksByProject(tasks), [tasks]);
   const { canCreateTasks } = useWorkspacePermission();
   const { data: session } = authClient.useSession();
@@ -28,7 +33,7 @@ export function MyTasksList({ tasks, workspaceId }: MyTasksListProps) {
             title={group.title}
             count={group.tasks.length}
             onCreateTask={
-              canCreateTasks()
+              allowCreate && canCreateTasks()
                 ? () => setCreateInProjectId(group.id)
                 : undefined
             }

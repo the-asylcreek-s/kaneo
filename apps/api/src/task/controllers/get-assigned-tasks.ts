@@ -1,23 +1,13 @@
-import {
-  and,
-  asc,
-  count,
-  desc,
-  eq,
-  inArray,
-  isNull,
-  ne,
-  sql,
-} from "drizzle-orm";
+import { and, asc, count, desc, eq, isNull, ne, not, sql } from "drizzle-orm";
 import db from "../../database";
-import {
-  columnTable,
-  labelTable,
-  projectTable,
-  taskTable,
-} from "../../database/schema";
+import { projectTable, taskTable } from "../../database/schema";
 import { projectAccessCondition } from "../../project-access/project-access-condition";
-import { taskIsCompleted } from "../task-is-completed";
+import {
+  assignedStatusColumn,
+  assignedTaskFields,
+  taskIsDone,
+} from "../assigned/assigned-task-fields";
+import { attachTaskLabels } from "../assigned/attach-task-labels";
 
 // Home and My tasks render this list whole, so it stays one bounded page.
 export const ASSIGNED_TASKS_LIMIT = 100;
@@ -40,11 +30,7 @@ async function getAssignedTasks(
     isNull(projectTable.archivedAt),
     eq(taskTable.userId, userId),
     ne(taskTable.status, "archived"),
-    sql`not coalesce((
-      select ${columnTable.isFinal} from ${columnTable}
-      where ${columnTable.id} = ${taskTable.columnId}
-        and ${columnTable.projectId} = ${taskTable.projectId}
-    ), ${taskIsCompleted})`,
+    not(taskIsDone),
     projectAccessCondition(userId, projectTable.id),
   );
 
@@ -59,45 +45,12 @@ async function getAssignedTasks(
     return { tasks: [], total: Number(totals?.total ?? 0) };
   }
 
-  // Existing databases may contain duplicate slugs from concurrent column
-  // creation. A lateral lookup must return at most one decoration per task.
-  const statusColumn = db
-    .select({ name: columnTable.name, icon: columnTable.icon })
-    .from(columnTable)
-    .where(
-      and(
-        eq(columnTable.projectId, taskTable.projectId),
-        eq(columnTable.slug, taskTable.status),
-      ),
-    )
-    .orderBy(
-      sql`case when ${columnTable.id} = ${taskTable.columnId} then 0 else 1 end`,
-      asc(columnTable.position),
-      asc(columnTable.createdAt),
-      asc(columnTable.id),
-    )
-    .limit(1)
-    .as("assigned_status_column");
-
   const [tasks, [totals]] = await Promise.all([
     db
-      .select({
-        id: taskTable.id,
-        projectId: taskTable.projectId,
-        number: taskTable.number,
-        title: taskTable.title,
-        status: taskTable.status,
-        statusName: statusColumn.name,
-        statusIcon: statusColumn.icon,
-        priority: taskTable.priority,
-        dueDate: taskTable.dueDate,
-        projectName: projectTable.name,
-        projectSlug: projectTable.slug,
-        projectIcon: projectTable.icon,
-      })
+      .select(assignedTaskFields)
       .from(taskTable)
       .innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
-      .leftJoinLateral(statusColumn, sql`true`)
+      .leftJoinLateral(assignedStatusColumn, sql`true`)
       .where(openAndMine)
       .orderBy(
         sql`${taskTable.dueDate} asc nulls last`,
@@ -109,40 +62,8 @@ async function getAssignedTasks(
     totalsQuery,
   ]);
 
-  const labels = tasks.length
-    ? await db
-        .select({
-          id: labelTable.id,
-          name: labelTable.name,
-          color: labelTable.color,
-          taskId: labelTable.taskId,
-        })
-        .from(labelTable)
-        .where(
-          inArray(
-            labelTable.taskId,
-            tasks.map((task) => task.id),
-          ),
-        )
-        .orderBy(asc(labelTable.name), asc(labelTable.id))
-    : [];
-
-  const labelsByTask = new Map<
-    string,
-    Array<{ id: string; name: string; color: string }>
-  >();
-  for (const { taskId, ...label } of labels) {
-    if (!taskId) continue;
-    const taskLabels = labelsByTask.get(taskId) ?? [];
-    taskLabels.push(label);
-    labelsByTask.set(taskId, taskLabels);
-  }
-
   return {
-    tasks: tasks.map((task) => ({
-      ...task,
-      labels: labelsByTask.get(task.id) ?? [],
-    })),
+    tasks: await attachTaskLabels(tasks),
     total: Number(totals?.total ?? 0),
   };
 }

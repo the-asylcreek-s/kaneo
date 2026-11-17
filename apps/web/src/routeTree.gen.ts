@@ -60,6 +60,7 @@ import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceImportRouteImport
 import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/labels'
 import { Route as LayoutAuthenticatedDashboardSettingsWorkspaceRolesRouteImport } from './routes/_layout/_authenticated/dashboard/settings/workspace/roles'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/index'
+import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/completed'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/inbox'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/members'
 import { Route as LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMyTasksRouteImport } from './routes/_layout/_authenticated/dashboard/workspace/$workspaceId/my-tasks'
@@ -368,6 +369,12 @@ const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRoute =
     path: '/',
     getParentRoute: () => LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute,
   } as any)
+const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRoute =
+  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRouteImport.update({
+    id: '/completed',
+    path: '/completed',
+    getParentRoute: () => LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute,
+  } as any)
 const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute =
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRouteImport.update({
     id: '/inbox',
@@ -549,6 +556,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings/workspace/import': typeof LayoutAuthenticatedDashboardSettingsWorkspaceImportRoute
   '/dashboard/settings/workspace/labels': typeof LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute
   '/dashboard/settings/workspace/roles': typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute
+  '/dashboard/workspace/$workspaceId/completed': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRoute
   '/dashboard/workspace/$workspaceId/inbox': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute
   '/dashboard/workspace/$workspaceId/members': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute
   '/dashboard/workspace/$workspaceId/my-tasks': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMyTasksRoute
@@ -613,6 +621,7 @@ export interface FileRoutesByTo {
   '/dashboard/settings/workspace/import': typeof LayoutAuthenticatedDashboardSettingsWorkspaceImportRoute
   '/dashboard/settings/workspace/labels': typeof LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute
   '/dashboard/settings/workspace/roles': typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute
+  '/dashboard/workspace/$workspaceId/completed': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRoute
   '/dashboard/workspace/$workspaceId/inbox': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute
   '/dashboard/workspace/$workspaceId/members': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute
   '/dashboard/workspace/$workspaceId/my-tasks': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMyTasksRoute
@@ -684,6 +693,7 @@ export interface FileRoutesById {
   '/_layout/_authenticated/dashboard/settings/workspace/import': typeof LayoutAuthenticatedDashboardSettingsWorkspaceImportRoute
   '/_layout/_authenticated/dashboard/settings/workspace/labels': typeof LayoutAuthenticatedDashboardSettingsWorkspaceLabelsRoute
   '/_layout/_authenticated/dashboard/settings/workspace/roles': typeof LayoutAuthenticatedDashboardSettingsWorkspaceRolesRoute
+  '/_layout/_authenticated/dashboard/workspace/$workspaceId/completed': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/inbox': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/members': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute
   '/_layout/_authenticated/dashboard/workspace/$workspaceId/my-tasks': typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMyTasksRoute
@@ -754,6 +764,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings/workspace/import'
     | '/dashboard/settings/workspace/labels'
     | '/dashboard/settings/workspace/roles'
+    | '/dashboard/workspace/$workspaceId/completed'
     | '/dashboard/workspace/$workspaceId/inbox'
     | '/dashboard/workspace/$workspaceId/members'
     | '/dashboard/workspace/$workspaceId/my-tasks'
@@ -818,6 +829,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings/workspace/import'
     | '/dashboard/settings/workspace/labels'
     | '/dashboard/settings/workspace/roles'
+    | '/dashboard/workspace/$workspaceId/completed'
     | '/dashboard/workspace/$workspaceId/inbox'
     | '/dashboard/workspace/$workspaceId/members'
     | '/dashboard/workspace/$workspaceId/my-tasks'
@@ -888,6 +900,7 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated/dashboard/settings/workspace/import'
     | '/_layout/_authenticated/dashboard/settings/workspace/labels'
     | '/_layout/_authenticated/dashboard/settings/workspace/roles'
+    | '/_layout/_authenticated/dashboard/workspace/$workspaceId/completed'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/inbox'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/members'
     | '/_layout/_authenticated/dashboard/workspace/$workspaceId/my-tasks'
@@ -1279,6 +1292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdIndexRouteImport
       parentRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute
     }
+    '/_layout/_authenticated/dashboard/workspace/$workspaceId/completed': {
+      id: '/_layout/_authenticated/dashboard/workspace/$workspaceId/completed'
+      path: '/completed'
+      fullPath: '/dashboard/workspace/$workspaceId/completed'
+      preLoaderRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRouteImport
+      parentRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRoute
+    }
     '/_layout/_authenticated/dashboard/workspace/$workspaceId/inbox': {
       id: '/_layout/_authenticated/dashboard/workspace/$workspaceId/inbox'
       path: '/inbox'
@@ -1549,6 +1569,7 @@ const LayoutAuthenticatedDashboardSettingsRouteWithChildren =
   )
 
 interface LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteChildren {
+  LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRoute
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute
   LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMyTasksRoute: typeof LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMyTasksRoute
@@ -1565,6 +1586,8 @@ interface LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteChildren {
 
 const LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteChildren: LayoutAuthenticatedDashboardWorkspaceWorkspaceIdRouteChildren =
   {
+    LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRoute:
+      LayoutAuthenticatedDashboardWorkspaceWorkspaceIdCompletedRoute,
     LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute:
       LayoutAuthenticatedDashboardWorkspaceWorkspaceIdInboxRoute,
     LayoutAuthenticatedDashboardWorkspaceWorkspaceIdMembersRoute:
